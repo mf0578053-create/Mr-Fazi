@@ -1,0 +1,8 @@
+{
+  "name": "AuraDesign Portfolio - UI/UX & Graphic Designer",
+  "description": "A high-end, modern designer portfolio featuring a Bento-grid layout, glassmorphic UI, and an integrated Gemini-powered AI Design Strategist to talk about design philosophy.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
