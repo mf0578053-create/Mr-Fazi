@@ -29,6 +29,9 @@ import { PROJECTS, SERVICES, SKILLS } from './constants';
 import AIAssistant from './components/AIAssistant';
 import SkillChart from './components/SkillChart';
 
+// Import jsPDF using the UMD pattern from the script tag in index.html
+declare var jspdf: any;
+
 const IntroLoader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [isExiting, setIsExiting] = useState(false);
 
@@ -66,45 +69,101 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
   if (!isOpen) return null;
 
   const handleDownload = () => {
-    // Creating a professional text representation of the CV to be downloaded
-    const cvContent = `
-FAIZAN AKRAM
-UI/UX & Graphic Designer
-Location: Faisalabad, Pakistan
-Email: mf0578053@gmail.com
-LinkedIn: linkedin.com/in/faizanakram
+    try {
+      const { jsPDF } = jspdf;
+      const doc = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-SUMMARY
-Multi-Disciplinary Designer specializing in UI/UX excellence. Bridging the gap between human needs and aesthetic function with a refined, modern touch.
+      // --- Match the visual style of the provided screenshot ---
+      
+      // Name (Large Blue)
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(32);
+      doc.setTextColor(37, 99, 235); // #2563EB
+      doc.text("FAIZAN AKRAM", 20, 30);
 
-EXPERIENCE
-Senior UI/UX Designer | Creative Solutions Agency (2022 — Present)
-- Lead visual direction for fintech and e-commerce platforms.
-- Established design systems reducing development time by 30%.
+      // Title (Gray)
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(16);
+      doc.setTextColor(100, 100, 100);
+      doc.text("UI/UX & Graphic Designer", 20, 40);
 
-Graphic & Product Designer | Design Hub Studio (2020 — 2022)
-- Delivered high-fidelity prototypes and brand identities for startups.
+      // Horizontal Line
+      doc.setDrawColor(240, 240, 240);
+      doc.line(20, 48, 190, 48);
 
-EDUCATION
-Bachelor of Design | University of Arts & Design (2020)
+      // Contact Info
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Location: Faisalabad, Pakistan", 20, 58);
+      doc.text("Email: mf0578053@gmail.com", 20, 65);
+      doc.text("LinkedIn: linkedin.com/in/faizanakram", 20, 72);
 
-CERTIFICATIONS
-- Google UX Design Professional (Coursera / Google • 2021)
-- Advanced Visual Systems (Design Mastery • 2020)
+      // Section: Professional Summary
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text("PROFESSIONAL SUMMARY", 20, 88);
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      const summary = "Multi-Disciplinary Designer specializing in UI/UX excellence. I architect digital emotions by translating complex problems into elegant, user-centric solutions. With over 2 years of mastery in visual systems and interaction design, I focus on accessibility and modern aesthetics.";
+      const splitSummary = doc.splitTextToSize(summary, 170);
+      doc.text(splitSummary, 20, 96);
 
-CORE TOOLS
-Figma, Adobe XD, Photoshop, Illustrator, After Effects
-    `.trim();
+      // Section: Experience
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("EXPERIENCE", 20, 118);
+      
+      // Job 1
+      doc.setFontSize(11);
+      doc.text("Senior UI/UX Designer", 20, 128);
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(10);
+      doc.text("Creative Solutions Agency (2022 — Present)", 20, 134);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Lead the visual direction for multiple fintech and e-commerce platforms.", 25, 142);
+      doc.text("- Established design systems that reduced development time by 30%.", 25, 148);
 
-    const blob = new Blob([cvContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'Faizan_Akram_CV.pdf'; // Named as .pdf as requested, though it's generated content
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      // Job 2
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("Graphic & Product Designer", 20, 162);
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(10);
+      doc.text("Design Hub Studio (2020 — 2022)", 20, 168);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Collaborated with cross-functional teams to deliver high-fidelity prototypes.", 25, 176);
+      doc.text("- Developed brand identities and visual languages for early-stage startups.", 25, 182);
+
+      // Section: Education
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("EDUCATION", 20, 202);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.text("Bachelor of Design", 20, 212);
+      doc.setFontSize(10);
+      doc.text("University of Arts & Design (2020)", 20, 218);
+
+      // Section: Core Tools
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("CORE TOOLS", 20, 235);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text("Figma, Adobe XD, Photoshop, Illustrator, After Effects, Protopie", 20, 243);
+
+      // Save PDF
+      doc.save('Faizan_Akram_CV.pdf');
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      alert("Something went wrong with the download. Please check your internet connection or try again.");
+    }
   };
 
   return (
