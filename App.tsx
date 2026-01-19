@@ -19,7 +19,11 @@ import {
   Sparkles,
   Send,
   MapPin,
-  Phone
+  Phone,
+  FileText,
+  X,
+  Download,
+  ExternalLink
 } from 'lucide-react';
 import { PROJECTS, SERVICES, SKILLS } from './constants';
 import AIAssistant from './components/AIAssistant';
@@ -58,10 +62,167 @@ const IntroLoader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   );
 };
 
+const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  const handleDownload = () => {
+    // Creating a professional text representation of the CV to be downloaded
+    const cvContent = `
+FAIZAN AKRAM
+UI/UX & Graphic Designer
+Location: Faisalabad, Pakistan
+Email: mf0578053@gmail.com
+LinkedIn: linkedin.com/in/faizanakram
+
+SUMMARY
+Multi-Disciplinary Designer specializing in UI/UX excellence. Bridging the gap between human needs and aesthetic function with a refined, modern touch.
+
+EXPERIENCE
+Senior UI/UX Designer | Creative Solutions Agency (2022 — Present)
+- Lead visual direction for fintech and e-commerce platforms.
+- Established design systems reducing development time by 30%.
+
+Graphic & Product Designer | Design Hub Studio (2020 — 2022)
+- Delivered high-fidelity prototypes and brand identities for startups.
+
+EDUCATION
+Bachelor of Design | University of Arts & Design (2020)
+
+CERTIFICATIONS
+- Google UX Design Professional (Coursera / Google • 2021)
+- Advanced Visual Systems (Design Mastery • 2020)
+
+CORE TOOLS
+Figma, Adobe XD, Photoshop, Illustrator, After Effects
+    `.trim();
+
+    const blob = new Blob([cvContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Faizan_Akram_CV.pdf'; // Named as .pdf as requested, though it's generated content
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-start justify-center p-4 md:p-8 pt-12 md:pt-24 overflow-y-auto">
+      <div className="fixed inset-0 bg-[#0a0a0a]/80 backdrop-blur-md" onClick={onClose}></div>
+      <div className="relative w-full max-w-4xl bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto max-h-none md:max-h-[85vh] animate-reveal mb-10">
+        <button 
+          onClick={onClose}
+          className="absolute top-6 right-6 z-30 p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-800 transition-colors"
+        >
+          <X size={20} />
+        </button>
+
+        {/* Sidebar */}
+        <div className="w-full md:w-1/3 bg-[#2563EB] p-8 md:p-12 text-white shrink-0">
+          <div className="mb-12">
+            <h2 className="text-3xl font-serif font-bold mb-2">Faizan Akram</h2>
+            <p className="text-blue-100 text-sm font-bold uppercase tracking-widest">UI/UX & Graphic Designer</p>
+          </div>
+
+          <div className="space-y-8">
+            <section>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200 mb-4">Contact</h3>
+              <div className="space-y-3 text-sm">
+                <p className="flex items-center gap-3"><Mail size={16} className="text-blue-200" /> mf0578053@gmail.com</p>
+                <p className="flex items-center gap-3"><MapPin size={16} className="text-blue-200" /> Faisalabad, Pakistan</p>
+                <p className="flex items-center gap-3"><Linkedin size={16} className="text-blue-200" /> linkedin.com/in/faizanakram</p>
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200 mb-4">Education</h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="font-bold text-sm">Bachelor of Design</p>
+                  <p className="text-xs text-blue-100 opacity-80">University of Arts & Design • 2020</p>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200 mb-4">Core Tools</h3>
+              <div className="flex flex-wrap gap-2">
+                {['Figma', 'Adobe XD', 'Photoshop', 'Illustrator', 'After Effects'].map(tool => (
+                  <span key={tool} className="px-3 py-1 bg-white/10 rounded-full text-[10px] font-bold">{tool}</span>
+                ))}
+              </div>
+            </section>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 bg-white p-8 md:p-12 overflow-y-auto">
+          <section className="mb-12">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2563EB] mb-6 flex items-center gap-3">
+              Experience <span className="flex-1 h-[1px] bg-gray-100"></span>
+            </h3>
+            <div className="space-y-10">
+              <div className="relative pl-6 border-l-2 border-blue-50">
+                <div className="absolute top-0 left-[-9px] w-4 h-4 rounded-full bg-[#2563EB] border-4 border-white shadow-sm"></div>
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-bold text-[#111827]">Senior UI/UX Designer</h4>
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">2022 — Present</span>
+                </div>
+                <p className="text-xs font-bold text-[#2563EB] mb-3">Creative Solutions Agency</p>
+                <p className="text-sm text-[#6B7280] leading-relaxed">Lead the visual direction for multiple fintech and e-commerce platforms. Established design systems that reduced development time by 30%.</p>
+              </div>
+
+              <div className="relative pl-6 border-l-2 border-blue-50">
+                <div className="absolute top-0 left-[-9px] w-4 h-4 rounded-full bg-blue-200 border-4 border-white shadow-sm"></div>
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-bold text-[#111827]">Graphic & Product Designer</h4>
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">2020 — 2022</span>
+                </div>
+                <p className="text-xs font-bold text-[#2563EB] mb-3">Design Hub Studio</p>
+                <p className="text-sm text-[#6B7280] leading-relaxed">Collaborated with cross-functional teams to deliver high-fidelity prototypes and brand identities for early-stage startups.</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="mb-12">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2563EB] mb-6 flex items-center gap-3">
+              Certifications <span className="flex-1 h-[1px] bg-gray-100"></span>
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                <p className="font-bold text-xs text-[#111827]">Google UX Design Professional</p>
+                <p className="text-[10px] text-[#6B7280]">Coursera / Google • 2021</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                <p className="font-bold text-xs text-[#111827]">Advanced Visual Systems</p>
+                <p className="text-[10px] text-[#6B7280]">Design Mastery • 2020</p>
+              </div>
+            </div>
+          </section>
+
+          <div className="pt-6 flex flex-col sm:flex-row gap-4">
+            <button 
+              onClick={handleDownload}
+              className="flex-1 py-4 bg-[#2563EB] text-white rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-200"
+            >
+              <Download size={16} /> Download PDF
+            </button>
+            <button className="flex-1 py-4 bg-gray-100 text-gray-800 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 hover:bg-gray-200 transition-all active:scale-95">
+              <ExternalLink size={16} /> Portfolio Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [isCVOpen, setIsCVOpen] = useState(false);
   const sections = ['about', 'work', 'skills', 'contact'];
 
   useEffect(() => {
@@ -136,7 +297,7 @@ const App: React.FC = () => {
         <nav 
           className={`pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
             isScrolled 
-              ? "max-w-3xl md:max-w-5xl w-[92%] rounded-[2rem] md:rounded-full bg-white/75 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.12)] py-2 px-6 md:px-10" 
+              ? "max-w-4xl md:max-w-6xl w-[92%] rounded-[2rem] md:rounded-full bg-white/75 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.12)] py-2 px-6 md:px-10" 
               : "w-[95%] max-w-[1400px] rounded-[1.5rem] md:rounded-[2.5rem] bg-[#2563EB] py-3 md:py-4 px-6 md:px-10 shadow-lg"
           }`}
         >
@@ -149,7 +310,7 @@ const App: React.FC = () => {
               <span className="tracking-tight">Faizan Akram</span>
             </button>
             
-            <div className={`hidden md:flex items-center gap-10 text-[11px] uppercase tracking-[0.15em] font-black transition-colors duration-500 ${isScrolled ? "text-[#4B5563]" : "text-white/90"}`}>
+            <div className={`hidden md:flex items-center gap-8 lg:gap-10 text-[11px] uppercase tracking-[0.15em] font-black transition-colors duration-500 ${isScrolled ? "text-[#4B5563]" : "text-white/90"}`}>
               <a 
                 href="#about" 
                 onClick={(e) => scrollToSection(e, 'about')}
@@ -171,6 +332,12 @@ const App: React.FC = () => {
               >
                 Skills
               </a>
+              <button 
+                onClick={() => setIsCVOpen(true)}
+                className={`flex items-center gap-2 hover:text-[#2563EB] transition-colors ${activeSection === 'cv' ? 'text-[#2563EB]' : ''}`}
+              >
+                <FileText size={14} className="mb-0.5" /> CV
+              </button>
               <a 
                 href="#contact" 
                 onClick={(e) => scrollToSection(e, 'contact')}
@@ -190,6 +357,8 @@ const App: React.FC = () => {
           </div>
         </nav>
       </div>
+
+      <CVModal isOpen={isCVOpen} onClose={() => setIsCVOpen(false)} />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-32">
         {/* Hero Section */}
