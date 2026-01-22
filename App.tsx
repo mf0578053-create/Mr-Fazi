@@ -67,7 +67,7 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
 
   const handleDownload = async () => {
     try {
-      const imageUrl = 'https://res.cloudinary.com/dsacnpxmq/image/upload/v1768808891/dgndndt_jmchrp.jpg';
+      const imageUrl = 'https://res.cloudinary.com/dsacnpxmq/image/upload/v1769061231/FAizanAkramCV_qe9qzy.jpg';
       
       // Fetch the image as a blob to force download on the local computer
       const response = await fetch(imageUrl);
@@ -86,7 +86,7 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
     } catch (error) {
       console.error("Download error:", error);
       // Fallback: Just open the link in a new tab if blob fetch fails
-      window.open('https://res.cloudinary.com/dsacnpxmq/image/upload/v1768808891/dgndndt_jmchrp.jpg', '_blank');
+      window.open('https://res.cloudinary.com/dsacnpxmq/image/upload/v1769061231/FAizanAkramCV_qe9qzy.jpg', '_blank');
     }
   };
 
@@ -102,13 +102,13 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
         </button>
 
         {/* Sidebar */}
-        <div className="w-full md:w-1/3 bg-[#2563EB] p-8 md:p-12 text-white shrink-0">
+        <div className="w-full md:w-1/3 bg-[#2563EB] p-8 md:p-12 text-white shrink-0 overflow-y-auto scrollbar-hide md:max-h-[85vh]">
           <div className="mb-12">
             <h2 className="text-3xl font-serif font-bold mb-2">Faizan Akram</h2>
             <p className="text-blue-100 text-sm font-bold uppercase tracking-widest">UI/UX & Graphic Designer</p>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-10 pb-6">
             <section>
               <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200 mb-4">Contact</h3>
               <div className="space-y-3 text-sm">
@@ -131,7 +131,7 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
             <section>
               <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200 mb-4">Core Tools</h3>
               <div className="flex flex-wrap gap-2">
-                {['Figma', 'Adobe XD', 'Photoshop', 'Illustrator', 'After Effects'].map(tool => (
+                {['Figma', 'Adobe XD', 'Photoshop', 'Illustrator', 'After Effects', 'Protopie'].map(tool => (
                   <span key={tool} className="px-3 py-1 bg-white/10 rounded-full text-[10px] font-bold">{tool}</span>
                 ))}
               </div>
@@ -140,7 +140,7 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 bg-white p-8 md:p-12 overflow-y-auto">
+        <div className="flex-1 bg-white p-8 md:p-12 overflow-y-auto scrollbar-hide">
           <section className="mb-12">
             <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2563EB] mb-6 flex items-center gap-3">
               Experience <span className="flex-1 h-[1px] bg-gray-100"></span>
@@ -189,7 +189,7 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
               onClick={handleDownload}
               className="flex-1 py-4 bg-[#2563EB] text-white rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-200"
             >
-              <Download size={16} /> DOWNLOAD PDF
+              <Download size={16} /> DOWNLOAD
             </button>
             <button className="flex-1 py-4 bg-gray-100 text-gray-800 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 hover:bg-gray-200 transition-all active:scale-95">
               <ExternalLink size={16} /> Portfolio Link
