@@ -331,67 +331,61 @@ const App: React.FC = () => {
         </nav>
       </div>
 
-      {/* MOBILE NAVIGATION OVERLAY - Redesigned to be at the top and styled */}
-      <div className={`fixed inset-0 z-[50] md:hidden transition-all duration-700 ease-[cubic-bezier(0.85,0,0.15,1)] ${isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}>
-        {/* Backdrop glass blur */}
-        <div className="absolute inset-0 bg-white/95 backdrop-blur-3xl" onClick={() => setIsMenuOpen(false)}></div>
+      {/* COMPACT MOBILE NAVIGATION PANEL */}
+      <div className={`fixed inset-x-0 top-0 z-[50] md:hidden transition-all duration-700 ease-[cubic-bezier(0.85,0,0.15,1)] ${isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}>
+        {/* Backdrop overlay */}
+        <div className={`fixed inset-0 bg-[#0a0a0a]/20 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={() => setIsMenuOpen(false)}></div>
         
-        {/* Content Container */}
-        <div className="relative h-full flex flex-col pt-32 pb-12 px-8 overflow-y-auto">
-          {/* Section Header */}
-          <div className={`mb-12 transition-all duration-700 delay-100 ${isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
-             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-600 mb-2">Navigation</p>
-             <h2 className="text-4xl font-serif font-bold text-[#111827]">Where to?</h2>
-          </div>
-
-          {/* Links Grid */}
-          <div className="grid grid-cols-1 gap-4">
+        {/* Menu Card */}
+        <div className="relative bg-white shadow-2xl rounded-b-[3.5rem] overflow-hidden pt-28 pb-10 px-8 flex flex-col items-center">
+          {/* Section Indicator */}
+          <div className="w-12 h-1.5 bg-gray-100 rounded-full mb-8"></div>
+          
+          {/* Navigation Links List */}
+          <div className="w-full flex flex-col gap-3">
             {mobileLinks.map((link, index) => (
               <button 
                 key={link.id}
                 onClick={() => link.id === 'home' ? scrollToTop() : scrollToSection(link.id)}
-                className={`group flex items-center justify-between p-6 rounded-[1.5rem] bg-gray-50 border border-gray-100 transition-all duration-500 hover:bg-blue-600 hover:border-blue-600 transform ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
-                style={{ transitionDelay: `${200 + index * 80}ms` }}
+                className={`flex items-center justify-between p-5 rounded-2xl bg-gray-50/80 border border-gray-100/50 transition-all duration-500 hover:bg-[#2563EB] group transform ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
+                style={{ transitionDelay: `${150 + index * 60}ms` }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-600 transition-colors group-hover:bg-white/10 group-hover:text-white">
+                  <div className={`w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-[#2563EB] group-hover:bg-white/10 group-hover:text-white transition-all`}>
                     {link.icon}
                   </div>
-                  <span className={`text-xl font-bold transition-colors ${activeSection === link.id ? 'text-blue-600' : 'text-[#111827]'} group-hover:text-white`}>
+                  <span className={`text-lg font-bold transition-colors ${activeSection === link.id ? 'text-[#2563EB]' : 'text-[#111827]'} group-hover:text-white`}>
                     {link.label}
                   </span>
                 </div>
-                <ArrowUpRight className="text-gray-300 transition-transform group-hover:text-white/50 group-hover:rotate-45" size={20} />
+                <ArrowUpRight className="text-gray-300 group-hover:text-white/50 group-hover:rotate-45 transition-all" size={18} />
               </button>
             ))}
 
+            {/* View CV Button */}
             <button 
               onClick={toggleCV}
-              className={`group flex items-center justify-between p-6 rounded-[1.5rem] bg-gray-50 border border-gray-100 transition-all duration-500 hover:bg-blue-600 hover:border-blue-600 transform ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
-              style={{ transitionDelay: `${200 + mobileLinks.length * 80}ms` }}
+              className={`flex items-center justify-between p-5 rounded-2xl bg-gray-50/80 border border-gray-100/50 transition-all duration-500 hover:bg-[#2563EB] group transform ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
+              style={{ transitionDelay: `${150 + mobileLinks.length * 60}ms` }}
             >
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-600 transition-colors group-hover:bg-white/10 group-hover:text-white">
-                  <FileText size={20} />
+                <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-[#2563EB] group-hover:bg-white/10 group-hover:text-white transition-all">
+                  <FileText size={18} />
                 </div>
-                <span className="text-xl font-bold text-[#111827] group-hover:text-white">View CV</span>
+                <span className="text-lg font-bold text-[#111827] group-hover:text-white">View CV</span>
               </div>
-              <Download size={20} className="text-gray-300 group-hover:text-white/50" />
+              <Download size={18} className="text-gray-300 group-hover:text-white/50 transition-all" />
             </button>
           </div>
-
-          {/* Footer of Menu */}
-          <div className={`mt-auto pt-12 flex flex-col gap-6 transition-all duration-700 delay-700 ${isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="h-[1px] w-full bg-gray-100"></div>
-            <div className="flex justify-between items-center">
-               <div className="flex gap-4">
-                 <a href="#" className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"><Linkedin size={18} /></a>
-                 <a href="#" className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"><Twitter size={18} /></a>
-                 <a href="#" className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"><Github size={18} /></a>
-               </div>
-               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© 2025 F.A.</p>
-            </div>
-          </div>
+          
+          {/* Contact CTA in Menu */}
+          <button 
+            onClick={() => scrollToSection('contact')}
+            className={`w-full mt-6 py-5 rounded-2xl bg-[#2563EB] text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-200 flex items-center justify-center gap-2 transform transition-all duration-500 ${isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            style={{ transitionDelay: '500ms' }}
+          >
+            LET'S WORK TOGETHER <MessageCircle size={14} />
+          </button>
         </div>
       </div>
 
