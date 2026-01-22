@@ -23,7 +23,12 @@ import {
   FileText,
   X,
   Download,
-  ExternalLink
+  ExternalLink,
+  Menu,
+  Home,
+  Star,
+  Zap,
+  MessageCircle
 } from 'lucide-react';
 import { PROJECTS, SERVICES, SKILLS } from './constants';
 import AIAssistant from './components/AIAssistant';
@@ -69,23 +74,20 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
     try {
       const imageUrl = 'https://res.cloudinary.com/dsacnpxmq/image/upload/v1769061231/FAizanAkramCV_qe9qzy.jpg';
       
-      // Fetch the image as a blob to force download on the local computer
       const response = await fetch(imageUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'Faizan_Akram_CV.jpg'; // Filename for the user's local save
+      link.download = 'Faizan_Akram_CV.jpg';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      // Clean up the URL object
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Download error:", error);
-      // Fallback: Just open the link in a new tab if blob fetch fails
       window.open('https://res.cloudinary.com/dsacnpxmq/image/upload/v1769061231/FAizanAkramCV_qe9qzy.jpg', '_blank');
     }
   };
@@ -204,6 +206,7 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isCVOpen, setIsCVOpen] = useState(false);
   const sections = ['about', 'work', 'skills', 'contact'];
@@ -248,8 +251,8 @@ const App: React.FC = () => {
     return <IntroLoader onComplete={() => setLoading(false)} />;
   }
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
+  const scrollToSection = (id: string) => {
+    setIsMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
       const offset = 100;
@@ -266,7 +269,21 @@ const App: React.FC = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setActiveSection('home');
+    setIsMenuOpen(false);
   };
+
+  const toggleCV = () => {
+    setIsCVOpen(!isCVOpen);
+    setIsMenuOpen(false);
+  };
+
+  const mobileLinks = [
+    { id: 'home', label: 'Home', icon: <Home size={20} /> },
+    { id: 'about', label: 'About', icon: <User size={20} /> },
+    { id: 'work', label: 'Projects', icon: <Briefcase size={20} /> },
+    { id: 'skills', label: 'Skills', icon: <Zap size={20} /> },
+    { id: 'contact', label: 'Contact', icon: <MessageCircle size={20} /> },
+  ];
 
   return (
     <div className="min-h-screen relative selection:bg-blue-500/10 transition-colors duration-700 content-reveal overflow-x-hidden">
@@ -276,12 +293,12 @@ const App: React.FC = () => {
       </div>
 
       {/* FIXED GLASSMORPHIC NAVBAR */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center items-center pointer-events-none transition-all duration-500 py-3 md:py-6">
+      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center items-center pointer-events-none transition-all duration-500 py-3 md:py-6 px-4">
         <nav 
           className={`pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
             isScrolled 
-              ? "max-w-4xl md:max-w-6xl w-[92%] rounded-[2rem] md:rounded-full bg-white/75 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.12)] py-2 px-6 md:px-10" 
-              : "w-[95%] max-w-[1400px] rounded-[1.5rem] md:rounded-[2.5rem] bg-[#2563EB] py-3 md:py-4 px-6 md:px-10 shadow-lg"
+              ? "max-w-4xl md:max-w-6xl w-full rounded-[2rem] md:rounded-full bg-white/75 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.12)] py-2 px-6 md:px-10" 
+              : "w-full max-w-[1400px] rounded-[1.5rem] md:rounded-[2.5rem] bg-[#2563EB] py-3 md:py-4 px-6 md:px-10 shadow-lg"
           }`}
         >
           <div className="flex items-center justify-between h-10 md:h-12">
@@ -293,52 +310,89 @@ const App: React.FC = () => {
               <span className="tracking-tight">Faizan Akram</span>
             </button>
             
+            {/* Desktop Navigation */}
             <div className={`hidden md:flex items-center gap-8 lg:gap-10 text-[11px] uppercase tracking-[0.15em] font-black transition-colors duration-500 ${isScrolled ? "text-[#4B5563]" : "text-white/90"}`}>
-              <a 
-                href="#about" 
-                onClick={(e) => scrollToSection(e, 'about')}
-                className={`relative group transition-colors duration-300 ${activeSection === 'about' ? (isScrolled ? 'text-[#2563EB]' : 'text-white underline underline-offset-8') : 'hover:text-[#2563EB]'}`}
-              >
-                About
-              </a>
-              <a 
-                href="#work" 
-                onClick={(e) => scrollToSection(e, 'work')}
-                className={`relative group transition-colors duration-300 ${activeSection === 'work' ? (isScrolled ? 'text-[#2563EB]' : 'text-white underline underline-offset-8') : 'hover:text-[#2563EB]'}`}
-              >
-                Projects
-              </a>
-              <a 
-                href="#skills" 
-                onClick={(e) => scrollToSection(e, 'skills')}
-                className={`relative group transition-colors duration-300 ${activeSection === 'skills' ? (isScrolled ? 'text-[#2563EB]' : 'text-white underline underline-offset-8') : 'hover:text-[#2563EB]'}`}
-              >
-                Skills
-              </a>
-              <button 
-                onClick={() => setIsCVOpen(true)}
-                className={`flex items-center gap-2 hover:text-[#2563EB] transition-colors ${activeSection === 'cv' ? 'text-[#2563EB]' : ''}`}
-              >
-                <FileText size={14} className="mb-0.5" /> CV
-              </button>
-              <a 
-                href="#contact" 
-                onClick={(e) => scrollToSection(e, 'contact')}
-                className={`px-8 py-3 rounded-full transition-all duration-500 font-black shadow-sm ${
-                  isScrolled 
-                    ? "bg-[#2563EB] text-white hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5" 
-                    : "bg-white text-[#2563EB] hover:scale-105 active:scale-95"
-                } ${activeSection === 'contact' ? 'ring-2 ring-offset-2 ring-[#2563EB]/20' : ''}`}
-              >
-                CONTACT
-              </a>
+              <button onClick={() => scrollToSection('about')} className={`relative group transition-colors duration-300 ${activeSection === 'about' ? (isScrolled ? 'text-[#2563EB]' : 'text-white underline underline-offset-8') : 'hover:text-[#2563EB]'}`}>About</button>
+              <button onClick={() => scrollToSection('work')} className={`relative group transition-colors duration-300 ${activeSection === 'work' ? (isScrolled ? 'text-[#2563EB]' : 'text-white underline underline-offset-8') : 'hover:text-[#2563EB]'}`}>Projects</button>
+              <button onClick={() => scrollToSection('skills')} className={`relative group transition-colors duration-300 ${activeSection === 'skills' ? (isScrolled ? 'text-[#2563EB]' : 'text-white underline underline-offset-8') : 'hover:text-[#2563EB]'}`}>Skills</button>
+              <button onClick={() => setIsCVOpen(true)} className={`flex items-center gap-2 hover:text-[#2563EB] transition-colors ${isCVOpen ? 'text-[#2563EB]' : ''}`}><FileText size={14} className="mb-0.5" /> CV</button>
+              <button onClick={() => scrollToSection('contact')} className={`px-8 py-3 rounded-full transition-all duration-500 font-black shadow-sm ${isScrolled ? "bg-[#2563EB] text-white hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5" : "bg-white text-[#2563EB] hover:scale-105 active:scale-95"} ${activeSection === 'contact' ? 'ring-2 ring-offset-2 ring-[#2563EB]/20' : ''}`}>CONTACT</button>
             </div>
 
-            <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className={`md:hidden p-2 rounded-xl transition-all ${isScrolled ? "text-[#111827] bg-gray-100" : "text-white bg-white/10"}`}>
-              <Mail size={20} />
-            </a>
+            {/* Mobile Hamburger Button */}
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+              className={`md:hidden p-2.5 rounded-xl transition-all flex items-center justify-center relative z-[60] ${isScrolled ? (isMenuOpen ? "text-[#111827]" : "text-[#111827] bg-gray-100") : (isMenuOpen ? "text-[#111827]" : "text-white bg-white/10")}`}
+              aria-label="Toggle Menu"
+            >
+              {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+            </button>
           </div>
         </nav>
+      </div>
+
+      {/* MOBILE NAVIGATION OVERLAY - Redesigned to be at the top and styled */}
+      <div className={`fixed inset-0 z-[50] md:hidden transition-all duration-700 ease-[cubic-bezier(0.85,0,0.15,1)] ${isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}>
+        {/* Backdrop glass blur */}
+        <div className="absolute inset-0 bg-white/95 backdrop-blur-3xl" onClick={() => setIsMenuOpen(false)}></div>
+        
+        {/* Content Container */}
+        <div className="relative h-full flex flex-col pt-32 pb-12 px-8 overflow-y-auto">
+          {/* Section Header */}
+          <div className={`mb-12 transition-all duration-700 delay-100 ${isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-600 mb-2">Navigation</p>
+             <h2 className="text-4xl font-serif font-bold text-[#111827]">Where to?</h2>
+          </div>
+
+          {/* Links Grid */}
+          <div className="grid grid-cols-1 gap-4">
+            {mobileLinks.map((link, index) => (
+              <button 
+                key={link.id}
+                onClick={() => link.id === 'home' ? scrollToTop() : scrollToSection(link.id)}
+                className={`group flex items-center justify-between p-6 rounded-[1.5rem] bg-gray-50 border border-gray-100 transition-all duration-500 hover:bg-blue-600 hover:border-blue-600 transform ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
+                style={{ transitionDelay: `${200 + index * 80}ms` }}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-600 transition-colors group-hover:bg-white/10 group-hover:text-white">
+                    {link.icon}
+                  </div>
+                  <span className={`text-xl font-bold transition-colors ${activeSection === link.id ? 'text-blue-600' : 'text-[#111827]'} group-hover:text-white`}>
+                    {link.label}
+                  </span>
+                </div>
+                <ArrowUpRight className="text-gray-300 transition-transform group-hover:text-white/50 group-hover:rotate-45" size={20} />
+              </button>
+            ))}
+
+            <button 
+              onClick={toggleCV}
+              className={`group flex items-center justify-between p-6 rounded-[1.5rem] bg-gray-50 border border-gray-100 transition-all duration-500 hover:bg-blue-600 hover:border-blue-600 transform ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
+              style={{ transitionDelay: `${200 + mobileLinks.length * 80}ms` }}
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-600 transition-colors group-hover:bg-white/10 group-hover:text-white">
+                  <FileText size={20} />
+                </div>
+                <span className="text-xl font-bold text-[#111827] group-hover:text-white">View CV</span>
+              </div>
+              <Download size={20} className="text-gray-300 group-hover:text-white/50" />
+            </button>
+          </div>
+
+          {/* Footer of Menu */}
+          <div className={`mt-auto pt-12 flex flex-col gap-6 transition-all duration-700 delay-700 ${isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className="h-[1px] w-full bg-gray-100"></div>
+            <div className="flex justify-between items-center">
+               <div className="flex gap-4">
+                 <a href="#" className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"><Linkedin size={18} /></a>
+                 <a href="#" className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"><Twitter size={18} /></a>
+                 <a href="#" className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"><Github size={18} /></a>
+               </div>
+               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">© 2025 F.A.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <CVModal isOpen={isCVOpen} onClose={() => setIsCVOpen(false)} />
@@ -357,12 +411,12 @@ const App: React.FC = () => {
             I am <span className="font-bold text-[#111827]">Faizan Akram</span>, a Multi-Disciplinary Designer specializing in UI/UX excellence. I bridge the gap between human needs and aesthetic function with a refined, modern touch.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <a href="#work" onClick={(e) => scrollToSection(e, 'work')} className="bg-[#2563EB] hover:bg-blue-700 text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-200 group">
+            <button onClick={() => scrollToSection('work')} className="bg-[#2563EB] hover:bg-blue-700 text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-200 group">
               Explore Portfolio <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </a>
-            <a href="#about" onClick={(e) => scrollToSection(e, 'about')} className="bg-white border border-gray-200 hover:bg-gray-50 px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold transition-all text-[#111827] flex items-center justify-center shadow-sm hover:shadow-md">
+            </button>
+            <button onClick={() => scrollToSection('about')} className="bg-white border border-gray-200 hover:bg-gray-50 px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold transition-all text-[#111827] flex items-center justify-center shadow-sm hover:shadow-md">
               About Me
-            </a>
+            </button>
           </div>
         </section>
 
@@ -719,9 +773,9 @@ const App: React.FC = () => {
             <p>© 2025 Faizan Akram. Creative Excellence.</p>
           </button>
           <div className="flex gap-6 md:gap-10 font-bold uppercase tracking-widest text-[10px]">
-            <a href="#about" onClick={(e) => scrollToSection(e, 'about')} className="hover:text-[#2563EB] transition-colors">Philosophy</a>
-            <a href="#work" onClick={(e) => scrollToSection(e, 'work')} className="hover:text-[#2563EB] transition-colors">Process</a>
-            <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="hover:text-[#2563EB] transition-colors">Inquire</a>
+            <button onClick={() => scrollToSection('about')} className="hover:text-[#2563EB] transition-colors uppercase">Philosophy</button>
+            <button onClick={() => scrollToSection('work')} className="hover:text-[#2563EB] transition-colors uppercase">Process</button>
+            <button onClick={() => scrollToSection('contact')} className="hover:text-[#2563EB] transition-colors uppercase">Inquire</button>
           </div>
         </div>
       </footer>
