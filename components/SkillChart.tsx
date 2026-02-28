@@ -1,14 +1,17 @@
 
 import React from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
-import { SKILLS } from '../constants';
+import { SKILLS as DEFAULT_SKILLS } from '../constants';
+import { Skill } from '../types';
 
 interface SkillChartProps {
   onDark?: boolean;
+  skills?: Skill[];
 }
 
-const SkillChart: React.FC<SkillChartProps> = ({ onDark = false }) => {
-  const chartData = SKILLS.filter(s => s.category === 'Hard Skill').map(s => ({
+const SkillChart: React.FC<SkillChartProps> = ({ onDark = false, skills }) => {
+  const dataToUse = skills || DEFAULT_SKILLS;
+  const chartData = dataToUse.filter(s => s.category === 'Hard Skill').map(s => ({
     subject: s.name,
     A: s.level,
     fullMark: 100,

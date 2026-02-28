@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { 
   ArrowUpRight, 
   Github, 
@@ -31,8 +32,10 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { PROJECTS, SERVICES, SKILLS } from './constants';
+import { Project, Skill } from './types';
 import AIAssistant from './components/AIAssistant';
 import SkillChart from './components/SkillChart';
+import AdminPanel from './components/AdminPanel';
 
 const IntroLoader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [isExiting, setIsExiting] = useState(false);
@@ -203,13 +206,24 @@ const CVModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, o
   );
 };
 
-const App: React.FC = () => {
+const Portfolio: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isCVOpen, setIsCVOpen] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const sections = ['about', 'work', 'skills', 'contact'];
+
+  useEffect(() => {
+    const savedProjects = localStorage.getItem('portfolio_projects');
+    const savedSkills = localStorage.getItem('portfolio_skills');
+    if (savedProjects) setProjects(JSON.parse(savedProjects));
+    else setProjects(PROJECTS);
+    if (savedSkills) setSkills(JSON.parse(savedSkills));
+    else setSkills(SKILLS);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -498,7 +512,7 @@ const App: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-y-16 md:gap-x-12">
-            {PROJECTS.map((project, index) => {
+            {projects.map((project, index) => {
               const isLarge = index === 1 || index === 2;
               const colSpan = isLarge ? "md:col-span-7" : "md:col-span-5";
               
@@ -607,7 +621,7 @@ const App: React.FC = () => {
                    Mastered Tooling <span className="flex-1 h-[1px] bg-white/10"></span>
                 </h5>
                 <div className="flex flex-wrap gap-4">
-                  {SKILLS.filter(s => s.category === 'Tool').map(skill => (
+                  {skills.filter(s => s.category === 'Tool').map(skill => (
                     <div key={skill.name} className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-xs font-bold hover:bg-white/20 transition-all cursor-default">
                       {skill.name}
                     </div>
@@ -623,7 +637,7 @@ const App: React.FC = () => {
                   <Sparkles size={20} className="text-white/60 animate-pulse" />
                   <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Visualizing Expertise</span>
                 </div>
-                <SkillChart onDark={true} />
+                <SkillChart onDark={true} skills={skills} />
               </div>
             </div>
           </div>
@@ -776,6 +790,15 @@ const App: React.FC = () => {
 
       <AIAssistant />
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<Portfolio />} />
+      <Route path="/admin" element={<AdminPanel />} />
+    </Routes>
   );
 };
 
